@@ -32,7 +32,6 @@ class Execution:
         net.train()
         if self.__C.N_GPU > 1:
              net = paddle.DataParallel(net)
-# >>>>>>            net = torch.nn.DataParallel(net, device_ids=self.__C.DEVICES)
         loss_fn = paddle.nn.BCELoss(reduction='sum')
         if self.__C.RESUME:
             print(' ========== Resume training')
@@ -66,15 +65,9 @@ class Execution:
         if self.__C.SHUFFLE_MODE in ['external']:
             dataloader = paddle.io.DataLoader(dataset, batch_size = self.__C.BATCH_SIZE, shuffle=False, num_workers=self.__C.
                 NUM_WORKERS, drop_last=True)
-# >>>>>>            dataloader = torch.utils.data.DataLoader(dataset, batch_size=
-#                 self.__C.BATCH_SIZE, shuffle=False, num_workers=self.__C.
-#                 NUM_WORKERS, pin_memory=self.__C.PIN_MEM, drop_last=True)
         else:
             dataloader = paddle.io.DataLoader(dataset, batch_size = self.__C.BATCH_SIZE, shuffle=True, num_workers=self.__C.
                 NUM_WORKERS, drop_last=True)
-# >>>>>>            dataloader = torch.utils.data.DataLoader(dataset, batch_size=
-#                 self.__C.BATCH_SIZE, shuffle=True, num_workers=self.__C.
-#                 NUM_WORKERS, pin_memory=self.__C.PIN_MEM, drop_last=True)
         for epoch in range(start_epoch, self.__C.MAX_EPOCH):
             logfile = open(self.__C.LOG_PATH + 'log_run_' + self.__C.
                 VERSION + '.txt', 'a+')
@@ -87,9 +80,7 @@ class Execution:
                 shuffle_list(dataset.ans_list)
             time_start = time.time()
             for step, (img_feat_iter, ques_ix_iter, ans_iter) in enumerate(dataloader):
-                optim.clear_grad()
-#                 """Class Method: *.zero_grad, can not convert, please check whether it is torch.Tensor.*/Optimizer.*/nn.Module.*/torch.distributions.Distribution.*/torch.autograd.function.FunctionCtx.*/torch.profiler.profile.*/torch.autograd.profiler.profile.*, and convert manually"""
-# >>>>>>                optim.zero_grad()
+                net.clear_gradients()
                 img_feat_iter = img_feat_iter
                 ques_ix_iter = ques_ix_iter
                 ans_iter = ans_iter
@@ -123,9 +114,6 @@ class Execution:
                         parameters(), max_norm=self.__C.GRAD_NORM_CLIP)
                 for name in range(len(named_params)):
                     norm_v = paddle.norm(named_params[name][1].grad).numpy() if named_params[name][1].grad is not None else 0
-# >>>>>>                    norm_v = torch.norm(named_params[name][1].grad).cpu(
-#                         ).data.numpy() if named_params[name][1
-#                         ].grad is not None else 0
                     grad_norm[name] += norm_v * self.__C.GRAD_ACCU_STEPS
                 optim.step()
             time_end = time.time()
@@ -175,12 +163,8 @@ class Execution:
         net.eval()
         if self.__C.N_GPU > 1:
             net = paddle.DataParallel(net)
-# >>>>>>            net = torch.nn.DataParallel(net, device_ids=self.__C.DEVICES)
         net.set_state_dict(state_dict=state_dict)
         dataloader = paddle.io.DataLoader(dataset, batch_size = self.__C.EVAL_BATCH_SIZE, shuffle=False, num_workers=self.__C.NUM_WORKERS)
-# >>>>>>        dataloader = torch.utils.data.DataLoader(dataset, batch_size=self.
-#             __C.EVAL_BATCH_SIZE, shuffle=False, num_workers=self.__C.
-#             NUM_WORKERS, pin_memory=True)
         for step, (img_feat_iter, ques_ix_iter, ans_iter) in enumerate(
             dataloader):
             print('\rEvaluation: [step %4d/%4d]' % (step, int(data_size /
