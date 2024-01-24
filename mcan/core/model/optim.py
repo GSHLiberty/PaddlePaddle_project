@@ -14,15 +14,12 @@ class WarmupOptimizer(object):
     def step(self):
         self._step += 1
         rate = self.rate()
-        for p in self.optimizer.param_groups:
-            p['lr'] = rate
+        self.optimizer.set_lr(rate)
         self._rate = rate
         self.optimizer.step()
 
     def zero_grad(self):
         self.optimizer.clear_grad()
-#         """Class Method: *.zero_grad, can not convert, please check whether it is torch.Tensor.*/Optimizer.*/nn.Module.*/torch.distributions.Distribution.*/torch.autograd.function.FunctionCtx.*/torch.profiler.profile.*/torch.autograd.profiler.profile.*, and convert manually"""
-# >>>>>>        self.optimizer.zero_grad()
 
     def rate(self, step=None):
         if step is None:
