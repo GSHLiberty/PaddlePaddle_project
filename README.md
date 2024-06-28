@@ -16,3 +16,5 @@
 | MMNasNet   | [MMNasNet](./MMNasNet/README.md) |
 | SongNet    | [SongNet](./SongNet/README.md)   |
 | Guyu       | [Guyu](./Guyu/README.md)         |
+| TRAR_VQA   | [TRAR](./TRAR/README.md)         |
+| TRAR_CLEVR | [TRAR](./TRAR/README.md)         |
