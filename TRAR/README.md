@@ -124,7 +124,7 @@ You can upload the obtained result json file to [Eval AI](https://evalai.cloudcv
 ### Models
 We provide two pretrained models, namely the `TRAR_VQA` model and the `TRAR_CLEVR` model. 
 
-These two models can be downloaded from [BaiduYun](https://pan.baidu.com/s/1BtPckyShCt6vvZDH-N83VQ), keyword is : gf42. You should unzip and put them to the correct folders as follows:
+These two models can be downloaded from [BaiduYun](https://pan.baidu.com/s/12v6icSj-5whdk32W1ocDmg), keyword is : xcnf. You should unzip and put them to the correct folders as follows:
 
 ```
 |-- ckpts
